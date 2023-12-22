@@ -7,6 +7,7 @@ import Dashboard from "../Pages/Dashboard";
 import Root from "../Pages/Root";
 import AddTodo from "../components/AddTodo";
 import UpdateTask from "../Pages/UpdateTask";
+import Profile from "../Pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
     {
       path: 'updateTask/:id',
       element: <UpdateTask></UpdateTask>
+    },
+    {
+      path: 'profile',
+      element: <Profile></Profile>
     }
   ]
   },

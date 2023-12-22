@@ -16,38 +16,38 @@ const AllTasks = ({ status }) => {
   const [complete, setComplete] = useState();
   const { user } = useContext(AuthContext);
 
-
   const { data: AllTasks = [], refetch } = useQuery({
     queryKey: ["tasks", user?.email],
     queryFn: async () => {
       const res = await axiosPublic.get(`/getTask?email=${user?.email}`);
       console.log(user?.email);
       setTasks(res.data);
-     
+
       return res.data;
-     
     },
   });
   // useEffect(
-    
+
   // refetch()
   //   ,[])
   // console.log(AllTasks);
   useEffect(() => {
     // Update 'todo' state after data is fetched
     if (Array.isArray(tasks)) {
-    const filteredTodo = tasks?.filter((task) => task?.status === "todo");
-    setTodo(filteredTodo);
+      const filteredTodo = tasks?.filter((task) => task?.status === "todo");
+      setTodo(filteredTodo);
 
-    const filteredOngoing = tasks?.filter((task) => task?.status === "ongoing");
-    setOngoing(filteredOngoing);
+      const filteredOngoing = tasks?.filter(
+        (task) => task?.status === "ongoing"
+      );
+      setOngoing(filteredOngoing);
 
-    const filteredComplete = tasks?.filter(
-      (task) => task?.status === "complete"
-    );
-    setComplete(filteredComplete); 
-    
-}}, [tasks]); // Run this effect whenever AllTasks changes
+      const filteredComplete = tasks?.filter(
+        (task) => task?.status === "complete"
+      );
+      setComplete(filteredComplete);
+    }
+  }, [tasks]); // Run this effect whenever AllTasks changes
 
   // console.log("todo", todo);
   // console.log("ongoing", ongoing);
@@ -141,10 +141,9 @@ const Section = ({ status, todo, ongoing, complete, tasks, setTasks }) => {
     drop: (item) => addItemToSection(item?.id),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-    
-    }), 
+    }),
   }));
- 
+
   let text = "Todo";
   let bg = "bg-blue-400";
   let tasksToMap = todo;
@@ -172,7 +171,7 @@ const Section = ({ status, todo, ongoing, complete, tasks, setTasks }) => {
     const updateStatus = {
       status,
     };
-  
+
     try {
       // Optimistically update the UI
       const updatedTasks = tasks?.map((task) => {
@@ -181,18 +180,21 @@ const Section = ({ status, todo, ongoing, complete, tasks, setTasks }) => {
         }
         return task;
       });
-  
+
       setTasks(updatedTasks); // Update the UI optimistically
-  
+
       // Make the API call to update the status
-      const response = await axiosPublic.patch(`/updateStatus/${id}`, updateStatus);
- 
+      const response = await axiosPublic.patch(
+        `/updateStatus/${id}`,
+        updateStatus
+      );
+
       // After receiving the updated data from the server, update the state with the new data
       if (response.data) {
-        const card = await axiosPublic.get(`/getTask`)
-        console.log(card?.data , 'card ');
+        const card = await axiosPublic.get(`/getTask`);
+        console.log(card?.data, "card ");
         console.log(response.data);
-        setTasks(card.data ); // Update the UI with the response from the server
+        setTasks(card.data); // Update the UI with the response from the server
       }
     } catch (error) {
       console.error("Error updating status:", error);
@@ -200,7 +202,6 @@ const Section = ({ status, todo, ongoing, complete, tasks, setTasks }) => {
       // You can implement rollback logic here to revert the optimistic update
     }
   };
-  
 
   return (
     <div ref={drop} className={`border-2  ${isOver ? "bg-slate-200" : ""}`}>
@@ -242,8 +243,8 @@ const Task = ({ task, tasks, setTasks }) => {
 
   // console.log(isDragging);
 
-  const axiosPublic = useAxiosPublic()
-  //delete data 
+  const axiosPublic = useAxiosPublic();
+  //delete data
   const handleDelete = async (_id) => {
     console.log(_id);
     // axiosPublic.delete(`/deleteTask/${_id}`)
@@ -255,13 +256,14 @@ const Task = ({ task, tasks, setTasks }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => { // Added 'async' here
+    }).then(async (result) => {
+      // Added 'async' here
       if (result.isConfirmed) {
         try {
           const res = await axiosPublic.delete(`/deleteTask/${_id}`);
           if (res.data.deletedCount > 0) {
             const card = await axiosPublic.get(`/getTask`);
-            console.log(card?.data, 'card ');
+            console.log(card?.data, "card ");
             // console.log(response.data);
             setTasks(card.data);
             Swal.fire({
@@ -277,10 +279,6 @@ const Task = ({ task, tasks, setTasks }) => {
       }
     });
   };
-  
-
-
-
 
   return (
     <div
@@ -292,24 +290,31 @@ const Task = ({ task, tasks, setTasks }) => {
       } `}
     >
       <div>
-        <h2
-          className={`text-3xl leading-9 font-bold tracking-tight sm:text-4xl sm:leading-10 `}
-        >
+        <h2 className={`  leading-9 font-bold tracking-tight  sm:leading-10 `}>
           {task?.taskName}
         </h2>
-        <p>{task?.description.slice(0, 90) + "...."}</p>
+        <p className="text-3xl ">
+          <span className="text-3xl "> Deadline: </span>
+           {task?.deadline}
+        </p>
+        <p className="text-xl ">
+          <span className=" text-2xl "> Priority: </span>
+           {task?.priority}
+        </p>
+        <p className="text-xl">{task?.description.slice(0, 90) + "...."}</p>
+
         <div className="mt-8 flex justify-center">
           <div className="inline-flex rounded-md gap-4  shadow">
-
             <Link to={`/updateTask/${task._id}`}>
-              <button className="text-gray-700 rounded-lg font-bold bg-white py-1 px-6">
-              Update
-            </button>
+            <button className="before:ease relative bg-white text-purple-500 rounded-lg  h-12 w-40 overflow-hidden  border-black shadow-2xl before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-purple-500 before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180">
+      <span className="relative z-10">Update </span>
+    </button>
             </Link>
-          
 
-            <button onClick={()=>handleDelete(task._id)} className="text-gray-700 rounded-lg font-bold bg-white py-1 px-6">
-              Delete
+            <button
+              onClick={() => handleDelete(task._id)}
+              className="before:ease relative h-12 bg-white w-40 rounded-lg overflow-hidden border border-blue-500 text-blue-500 shadow-2xl transition-all before:absolute before:top-1/2 before:h-0 before:w-64 before:origin-center before:-translate-x-20 before:rotate-45 before:bg-blue-500 before:duration-300 hover:text-white hover:shadow-blue-500 hover:before:h-64 hover:before:-translate-y-32">
+              <span className="relative z-10">Delete</span>
             </button>
           </div>
         </div>

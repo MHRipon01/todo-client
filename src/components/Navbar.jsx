@@ -37,6 +37,20 @@ const { user, logOut } = useContext(AuthContext)
       >
         TODO
       </NavLink>
+
+      <NavLink
+        className="text-2xl font-Cormorant  font-medium rounded-xl p-3"
+        to="/profile"
+        style={({ isActive }) => {
+          return {
+            fontWeight: isActive ? "bold" : "",
+            color:isActive ?  'white': "" ,
+            backgroundColor: isActive ? "#786fee" : "",
+          };
+        }}
+      >
+        Profile 
+      </NavLink>
      
     </>
   );
