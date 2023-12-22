@@ -6,6 +6,7 @@ import TaskManagementDashboard from "../Pages/TaskManagementDashboard";
 import Dashboard from "../Pages/Dashboard";
 import Root from "../Pages/Root";
 import AddTodo from "../components/AddTodo";
+import UpdateTask from "../Pages/UpdateTask";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
     {
       path:'createTodo',
       element: <AddTodo></AddTodo>
+    },
+    {
+      path: 'updateTask/:id',
+      element: <UpdateTask></UpdateTask>
     }
   ]
   },
